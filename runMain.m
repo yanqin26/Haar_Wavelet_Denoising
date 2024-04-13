@@ -40,11 +40,8 @@ for m = 1 : 1 : 2 ^ 14
     first_index = first_index + 1;
 end
 
-%作图----------------------------------
+%作图
 x = [1 : 2^15];
-
-grid on;
-hold on;
 
 figure(1);%V15
 y15 = cat(1, zeros(14767, 1), ppgData);
@@ -60,6 +57,43 @@ figure(3);%W14
 w14 = Basis_W14 * coeffcient{2, 2};
 plot(x, w14);
 title("W14")
+
+
+%------------------------------------阈值去噪-------------------------------
+coeffcient = thresholding_denoising(coeffcient, ppgData);
+
+
+
+
+%-------------------------------------小波重组------------------------------
+new_coeffcient = haar_reconstruct(coeffcient);
+a_15 = new_coeffcient{1, 1};
+
+Basis_V15 = zeros(2 ^ 15);
+for m = 1 : 1 : 2 ^ 15
+    Basis_V15(m, m) = 1;
+end
+
+figure(4);%V15
+V15 = Basis_V15 * a_15;
+plot(x, y15, "b");
+
+grid on;
+hold on;
+
+plot(x, V15, "r");
+
+hold off;
+legend("RowPPG", "FilteredPPG")
+
+
+
+
+
+
+
+
+
 
 
 
