@@ -60,13 +60,22 @@ title("W14")
 
 
 %------------------------------------阈值去噪-------------------------------
-coeffcient = thresholding_denoising(coeffcient, ppgData);
+%Filtering Noise from Images with Wavelet Transforms - April 12, 1991
+coeffcient1 = hard_thresholding_Weaver_1991(coeffcient, ppgData);
 
 
+%Ideal spatial adaptation by wavelet shrinkage - September 1994
+coeffcient2 = soft_thresholding_Donoho_1994(coeffcient, ppgData);
+
+
+%Wavelet-based denoising by customized thresholding - May 2004
+%只复现了一半：1.仅在alpha非常小也即偏向软阈值时才能正常运行 2.可能是没有准确的估计方差的原因
+alpha = 0.000001;
+coeffcient3 = customized_thresholding_Yoon_2004(coeffcient, alpha);
 
 
 %-------------------------------------小波重组------------------------------
-new_coeffcient = haar_reconstruct(coeffcient);
+new_coeffcient = haar_reconstruct(coeffcient1); %在这里选择要用的阈值函数
 a_15 = new_coeffcient{1, 1};
 
 Basis_V15 = zeros(2 ^ 15);
